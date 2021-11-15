@@ -1,10 +1,13 @@
 import 'package:basecode/screens/DashboardScreen.dart';
 import 'package:basecode/screens/ForgotPasswordScreen.dart';
 import 'package:basecode/screens/RegistrationScreen.dart';
+import 'package:basecode/services/AuthService.dart';
+import 'package:basecode/services/LocalStorageService.dart';
 import 'package:basecode/widgets/SecondaryButton.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 import '../widgets/PrimaryButton.dart';
 import '../widgets/CustomTextFormField.dart';
 import '../widgets/PasswordField.dart';
@@ -16,10 +19,13 @@ class LoginScreen extends StatefulWidget {
 }
 
 class LoginScreenState extends State<LoginScreen> {
+  AuthService authService = AuthService();
   bool _obscureText = true;
+  bool isLogginIn = false;
   @override
   Widget build(BuildContext context) {
     return SafeArea(
+    child: ModalProgressHUD(inAsyncCall: isLogginIn,
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.transparent,
@@ -72,10 +78,7 @@ class LoginScreenState extends State<LoginScreen> {
                   PrimaryButton(
                       text: "Sign-in with Google",
                       iconData: FontAwesomeIcons.google,
-                      onPress: () {
-                        //authenticate here
-                        Get.offNamed(DashboardScreen.routeName);
-                      }),
+                      onPress: login),
                   SizedBox(
                     height: 20.0,
                   ),
@@ -100,6 +103,31 @@ class LoginScreenState extends State<LoginScreen> {
           ),
         ),
       ),
+    )
     );
+  }
+
+  login() async {
+    try {
+      setState(() {
+        isLogginIn = true;
+      });
+      var user = await authService.signInWithGoogle();
+
+      if(user == null) {
+        print("Invalid user credentials");
+        return;
+      }
+
+      LocalStorageService.setName(user.user.displayName);
+      LocalStorageService.setUid(user.user.uid);
+
+      Get.offNamed(DashboardScreen.routeName);
+    } catch (e) {
+      print(e.toString());
+    }
+    setState(() {
+        isLogginIn = false;
+      });
   }
 }
