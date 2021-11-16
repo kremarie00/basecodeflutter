@@ -4,6 +4,7 @@ import 'package:basecode/screens/RegistrationScreen.dart';
 import 'package:basecode/services/AuthService.dart';
 import 'package:basecode/services/LocalStorageService.dart';
 import 'package:basecode/widgets/SecondaryButton.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -68,10 +69,7 @@ class LoginScreenState extends State<LoginScreen> {
                   PrimaryButton(
                       text: "Login",
                       iconData: FontAwesomeIcons.doorOpen,
-                      onPress: () {
-                        //authenticate here
-                        Get.offNamed(DashboardScreen.routeName);
-                      }),
+                      onPress: logIn),
                   SizedBox(
                     height: 20.0,
                   ),
@@ -105,6 +103,22 @@ class LoginScreenState extends State<LoginScreen> {
       ),
     )
     );
+  }
+
+  logIn() async {
+    try {
+  UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+    email: "barry.allen@example.com",
+    password: "SuperSecretPassword!"
+  );
+  } on FirebaseAuthException catch (e) {
+  if (e.code == 'user-not-found') {
+    print('No user found for that email.');
+  } else if (e.code == 'wrong-password') {
+    print('Wrong password provided for that user.');
+  }
+}
+   Get.offNamed(DashboardScreen.routeName);
   }
 
   login() async {
