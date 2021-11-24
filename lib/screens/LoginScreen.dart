@@ -26,7 +26,8 @@ class LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-    child: ModalProgressHUD(inAsyncCall: isLogginIn,
+        child: ModalProgressHUD(
+      inAsyncCall: isLogginIn,
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.transparent,
@@ -101,24 +102,21 @@ class LoginScreenState extends State<LoginScreen> {
           ),
         ),
       ),
-    )
-    );
+    ));
   }
 
   logIn() async {
     try {
-  UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-    email: "barry.allen@example.com",
-    password: "SuperSecretPassword!"
-  );
-  } on FirebaseAuthException catch (e) {
-  if (e.code == 'user-not-found') {
-    print('No user found for that email.');
-  } else if (e.code == 'wrong-password') {
-    print('Wrong password provided for that user.');
-  }
-}
-   Get.offNamed(DashboardScreen.routeName);
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: "kremarie@gmail.com", password: "SuperSecretPassword!");
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        print('No user found for that email.');
+      } else if (e.code == 'wrong-password') {
+        print('Wrong password provided for that user.');
+      }
+    }
+    Get.offNamed(DashboardScreen.routeName);
   }
 
   login() async {
@@ -128,7 +126,7 @@ class LoginScreenState extends State<LoginScreen> {
       });
       var user = await authService.signInWithGoogle();
 
-      if(user == null) {
+      if (user == null) {
         print("Invalid user credentials");
         return;
       }
@@ -141,7 +139,7 @@ class LoginScreenState extends State<LoginScreen> {
       print(e.toString());
     }
     setState(() {
-        isLogginIn = false;
-      });
+      isLogginIn = false;
+    });
   }
 }
