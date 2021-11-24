@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import './screens/LoginScreen.dart';
 import './routes.dart';
 import 'package:firebase_core/firebase_core.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -22,8 +23,8 @@ void main() async {
       ),
     ),
     getPages: routes,
-    initialRoute: LocalStorageService.isUserLoggedIn() 
-    ? DashboardScreen.routeName 
-    : LoginScreen.routeName,
+    initialRoute: LocalStorageService.isUserLoggedIn()
+        ? DashboardScreen.routeName
+        : LoginScreen.routeName,
   ));
 }
